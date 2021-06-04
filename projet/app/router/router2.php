@@ -25,6 +25,9 @@ $args = $param;
 // --- Liste des méthodes autorisées
 switch ($action) {
     case "vaccinReadAll" :
+    case "vaccinCreate" :
+    case "vaccinCreated" :
+        
 
         // --- Passage des arguments au contrôleur
         ControllerVaccin::$action($args);
