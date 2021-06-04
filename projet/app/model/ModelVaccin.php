@@ -4,7 +4,7 @@
 <?php
 require_once 'Model.php';
 
-class ModelVin {
+class ModelVaccin {
 
     private $id, $cru, $annee, $degre;
 
@@ -30,7 +30,6 @@ class ModelVin {
         $this->doses = $doses;
     }
 
-
     function getId() {
         return $this->id;
     }
@@ -43,6 +42,19 @@ class ModelVin {
         return $this->doses;
     }
 
+    public static function getAll() {
+        try {
+            $database = Model::getInstance();
+            $query = "select * from vaccin";
+            $statement = $database->prepare($query);
+            $statement->execute();
+            $results = $statement->fetchAll(PDO::FETCH_CLASS, "ModelVaccin");
+            return $results;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return NULL;
+        }
+    }
 
 }
 ?>
