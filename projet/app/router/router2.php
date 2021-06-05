@@ -50,6 +50,8 @@ switch ($action) {
 
     case "stockReadAll" :
     case "stockGetCount" :
+    case "stockAdd" :
+    case "stockAdded" :
         ControllerStock::$action($args);
         break;
 

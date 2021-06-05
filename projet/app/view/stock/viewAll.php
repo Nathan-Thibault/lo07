@@ -18,7 +18,7 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
     // La liste des stocks est dans une variable $results
 
     foreach ($results as $element) {
-        printf("<tr><td>%s</td><td>%s</td><td>%d</td></tr>", $element->getCentre()->getLabel(), $element->getVaccin()->getLabel(), $element->getQuantite());
+        printf("<tr><td>%s</td><td>%s</td><td>%d</td></tr>", $element->getCentre(), $element->getVaccin()->getLabel(), $element->getQuantite());
     }
 
     ?>

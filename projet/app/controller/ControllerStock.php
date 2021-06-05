@@ -24,7 +24,34 @@ class ControllerStock
         include 'config.php';
         $vue = $root . '/app/view/stock/viewCount.php';
         if (DEBUG)
-            echo("ControllerStock : stockReadAll : vue = $vue");
+            echo("ControllerStock : stockGetCount : vue = $vue");
+        require($vue);
+    }
+
+    public static function stockAdd()
+    {
+        $centres = ModelCentre::getAll();
+        $vaccins = ModelVaccin::getAll();
+        // ----- Construction chemin de la vue
+        include 'config.php';
+        $vue = $root . '/app/view/stock/viewAdd.php';
+        if (DEBUG)
+            echo("ControllerStock : stockAdd : vue = $vue");
+        require($vue);
+    }
+
+    public static function stockAdded()
+    {
+        $quantites = array();
+        foreach (ModelVaccin::getAll() as $vaccin){
+            $quantites[$vaccin->getId()] = $_GET[$vaccin->getId()];
+        }
+        $results = ModelStock::updateCentreStock($_GET['centre_id'], $quantites);
+        // ----- Construction chemin de la vue
+        include 'config.php';
+        $vue = $root . '/app/view/stock/viewAdded.php';
+        if (DEBUG)
+            echo("ControllerStock : stockAdded : vue = $vue");
         require($vue);
     }
 }

@@ -47,8 +47,7 @@ class ModelStock
 
     public function  getCentre()
     {
-        $centre_array = ModelCentre::getOne($this->getCentreId());
-        return array_pop($centre_array);
+        return ModelCentre::getLabelWithId($this->getCentreId());
     }
 
     public function  getVaccin()
@@ -78,6 +77,24 @@ class ModelStock
         } catch (PDOException $e) {
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return NULL;
+        }
+    }
+
+    public static function updateCentreStock($centre_id, $quantites) {
+        try {
+            $database = Model::getInstance();
+            foreach ($quantites as $vaccin_id => $quantite){
+                $statement = $database->prepare("update stock set quantite = quantite + :q where centre_id = :cid and vaccin_id = :vid");
+                $statement->execute([
+                    "q" => $quantite,
+                    "cid" => $centre_id,
+                    "vid" => $vaccin_id
+                ]);
+            }
+            return true;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return false;
         }
     }
 }
