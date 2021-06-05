@@ -1,6 +1,7 @@
 <!-- ----- debut Router -->
 <?php
 require ('../controller/ControllerVaccin.php');
+require ('../controller/ControllerCentre.php');
 
 
 // --- récupération de l'action passée dans l'URL
@@ -33,6 +34,11 @@ switch ($action) {
 
         // --- Passage des arguments au contrôleur
         ControllerVaccin::$action($args);
+        break;
+
+    case "centreReadAll" :
+        // --- Passage des arguments au contrôleur
+        ControllerCentre::$action($args);
         break;
 
 
