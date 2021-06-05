@@ -49,7 +49,7 @@ switch ($action) {
         break;
 
     case "stockReadAll" :
-    case "stock" :
+    case "stockGetCount" :
         ControllerStock::$action($args);
         break;
 

@@ -68,6 +68,18 @@ class ModelStock
             return NULL;
         }
     }
+
+    public static function getCount() {
+        try {
+            $database = Model::getInstance();
+            $statement = $database->prepare("select centre_id, sum(quantite) as sum from stock group by centre_id order by sum desc");
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return NULL;
+        }
+    }
 }
 
 ?>

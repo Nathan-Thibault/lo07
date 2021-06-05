@@ -9,16 +9,15 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
     <thead>
     <tr>
         <th scope="col">Centre</th>
-        <th scope="col">Vaccin</th>
-        <th scope="col">Quantite</th>
+        <th scope="col">Total doses</th>
     </tr>
     </thead>
     <tbody>
     <?php
     // La liste des stocks est dans une variable $results
 
-    foreach ($results as $element) {
-        printf("<tr><td>%s</td><td>%s</td><td>%d</td></tr>", $element->getCentre()->getLabel(), $element->getVaccin()->getLabel(), $element->getQuantite());
+    foreach ($results as $result) {
+        printf("<tr><td>%s</td><td>%d</td></tr>", ModelCentre::getLabelWithId($result['centre_id']), $result['sum']);
     }
 
     ?>

@@ -91,7 +91,7 @@ class ModelCentre
         }
     }
 
-    public static function getOne($id)
+    public static function getLabelWithId($id)
     {
         try {
             $database = Model::getInstance();
@@ -99,7 +99,8 @@ class ModelCentre
             $statement->execute([
                 'id' => $id
             ]);
-            return $statement->fetchAll(PDO::FETCH_CLASS, "ModelCentre");
+            $array = $statement->fetchAll(PDO::FETCH_CLASS, "ModelCentre");
+            return array_pop($array)->getLabel();
         } catch (PDOException $e) {
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return NULL;
