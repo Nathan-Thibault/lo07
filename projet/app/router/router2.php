@@ -2,6 +2,7 @@
 <?php
 require ('../controller/ControllerVaccin.php');
 require ('../controller/ControllerCentre.php');
+require ('../controller/ControllerPatient.php');
 
 
 // --- récupération de l'action passée dans l'URL
@@ -41,6 +42,13 @@ switch ($action) {
     case "centreCreated" :
         // --- Passage des arguments au contrôleur
         ControllerCentre::$action($args);
+        break;
+    
+    case "patientReadAll" :
+    case "patientCreate" :
+    case "patientCreated" :
+        // --- Passage des arguments au contrôleur
+        ControllerPatient::$action($args);
         break;
 
 
