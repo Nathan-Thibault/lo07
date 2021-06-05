@@ -1,9 +1,9 @@
 <!-- ----- debut Router -->
 <?php
-require ('../controller/ControllerVaccin.php');
-require ('../controller/ControllerCentre.php');
-require ('../controller/ControllerPatient.php');
-
+require('../controller/ControllerVaccin.php');
+require('../controller/ControllerCentre.php');
+require('../controller/ControllerPatient.php');
+require('../controller/ControllerVaccination.php');
 
 // --- récupération de l'action passée dans l'URL
 $query_string = $_SERVER['QUERY_STRING'];
@@ -11,6 +11,7 @@ $query_string = $_SERVER['QUERY_STRING'];
 // fonction parse_str permet de construire 
 // une table de hachage (clé + valeur)
 parse_str($query_string, $param);
+
 // Ici, $param devient alors table de hachage avec comme dans l'exemple 
 // --- $action contient le nom de la méthode statique recherchée 
 $action = htmlspecialchars($param["action"]);
@@ -31,8 +32,6 @@ switch ($action) {
     case "vaccinCreated" :
     case "vaccinUpdate" :
     case "vaccinUpdated" :
-
-
         // --- Passage des arguments au contrôleur
         ControllerVaccin::$action($args);
         break;
@@ -43,7 +42,7 @@ switch ($action) {
         // --- Passage des arguments au contrôleur
         ControllerCentre::$action($args);
         break;
-    
+
     case "patientReadAll" :
     case "patientCreate" :
     case "patientCreated" :
@@ -55,7 +54,7 @@ switch ($action) {
     // Appel par défaut
     default:
         $action = "vaccinationAccueil";
-        ControllerVaccin::$action();
+        ControllerVaccination::$action();
 }
 ?>
 <!-- ----- Fin Router -->

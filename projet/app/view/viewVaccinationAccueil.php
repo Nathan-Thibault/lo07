@@ -1,5 +1,4 @@
- 
-<!-- ----- debut de la page cave_acceuil -->
+<!-- ----- debut de la page vaccination_acceuil -->
 <?php include 'fragment/fragmentVaccinationHeader.html'; ?>
 <body>
   <div class="container">
@@ -8,13 +7,10 @@
     include 'fragment/fragmentVaccinationJumbotron.html';
     ?>
   </div>   
-  
-    
+
   <?php
   include 'fragment/fragmentVaccinationFooter.html';
   ?>
-
-  <!-- ----- fin de la page cave_acceuil -->
-
+  <!-- ----- fin de la page vaccination_acceuil -->
 </body>
 </html>
