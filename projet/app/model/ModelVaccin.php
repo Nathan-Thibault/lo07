@@ -6,7 +6,7 @@ require_once 'Model.php';
 
 class ModelVaccin {
 
-    private $id, $cru, $annee, $degre;
+    private $id, $label, $doses;
 
     // pas possible d'avoir 2 constructeurs
     public function __construct($id = NULL, $label = NULL, $doses = NULL) {

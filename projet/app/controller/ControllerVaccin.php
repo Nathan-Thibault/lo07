@@ -14,7 +14,7 @@ class ControllerVaccin {
         require ($vue);
     }
 
-    // --- Liste des vins
+    // --- Liste des vaccins
     public static function vaccinReadAll() {
         $results = ModelVaccin::getAll();
         // ----- Construction chemin de la vue
