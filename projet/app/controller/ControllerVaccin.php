@@ -12,7 +12,7 @@ class ControllerVaccin
         include 'config.php';
         $vue = $root . '/app/view/vaccin/viewAll.php';
         if (DEBUG)
-            echo("ControllerVaccin : vinReadAll : vue = $vue");
+            echo("ControllerVaccin : vaccinReadAll : vue = $vue");
         require($vue);
     }
 

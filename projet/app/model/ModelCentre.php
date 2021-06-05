@@ -1,15 +1,16 @@
-
 <!-- ----- debut ModelCentre -->
 
 <?php
 require_once 'Model.php';
 
-class ModelCentre {
+class ModelCentre
+{
 
     private $id, $label, $adresse;
 
     // pas possible d'avoir 2 constructeurs
-    public function __construct($id = NULL, $label = NULL, $adresse = NULL) {
+    public function __construct($id = NULL, $label = NULL, $adresse = NULL)
+    {
         // valeurs nulles si pas de passage de parametres
         if (!is_null($id)) {
             $this->id = $id;
@@ -18,31 +19,38 @@ class ModelCentre {
         }
     }
 
-    function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
-    function setLabel($label) {
+    public function setLabel($label)
+    {
         $this->label = $label;
     }
 
-    function setAdresse($adresse) {
+    public function setAdresse($adresse)
+    {
         $this->adresse = $adresse;
     }
 
-    function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    function getLabel() {
+    public function getLabel()
+    {
         return $this->label;
     }
 
-    function getAdresse() {
+    public function getAdresse()
+    {
         return $this->adresse;
     }
 
-    public static function getAll() {
+    public static function getAll()
+    {
         try {
             $database = Model::getInstance();
             $query = "select * from centre";
@@ -55,7 +63,9 @@ class ModelCentre {
             return NULL;
         }
     }
-        public static function insert($label, $adresse) {
+
+    public static function insert($label, $adresse)
+    {
         try {
             $database = Model::getInstance();
 
@@ -81,4 +91,18 @@ class ModelCentre {
         }
     }
 
+    public static function getOne($id)
+    {
+        try {
+            $database = Model::getInstance();
+            $statement = $database->prepare("select * from centre where id = :id");
+            $statement->execute([
+                'id' => $id
+            ]);
+            return $statement->fetchAll(PDO::FETCH_CLASS, "ModelCentre");
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return NULL;
+        }
+    }
 }

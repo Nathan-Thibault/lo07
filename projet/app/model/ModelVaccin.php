@@ -18,27 +18,27 @@ class ModelVaccin {
         }
     }
 
-    function setId($id) {
+    public function setId($id) {
         $this->id = $id;
     }
 
-    function setLabel($label) {
+    public function setLabel($label) {
         $this->label = $label;
     }
 
-    function setDoses($doses) {
+    public function setDoses($doses) {
         $this->doses = $doses;
     }
 
-    function getId() {
+    public function getId() {
         return $this->id;
     }
 
-    function getLabel() {
+    public function getLabel() {
         return $this->label;
     }
 
-    function getDoses() {
+    public function getDoses() {
         return $this->doses;
     }
 
@@ -117,6 +117,20 @@ class ModelVaccin {
         }
     }
 
+    public static function getOne($id)
+    {
+        try {
+            $database = Model::getInstance();
+            $statement = $database->prepare("select * from vaccin where id = :id");
+            $statement->execute([
+                'id' => $id
+            ]);
+            return $statement->fetchAll(PDO::FETCH_CLASS, "ModelVaccin");
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return NULL;
+        }
+    }
 }
 ?>
 <!-- ----- fin ModelVaccin -->

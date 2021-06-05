@@ -6,7 +6,6 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
 ?>
 <!-- ===================================================== -->
 <?php
-echo("<p>test</p>");
 if ($results) {
     echo("<h3>L'attribut dose du vaccin a été mis à jour</h3>");
     echo("<ul>");
