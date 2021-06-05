@@ -37,6 +37,8 @@ switch ($action) {
         break;
 
     case "centreReadAll" :
+    case "centreCreate" :
+    case "centreCreated" :
         // --- Passage des arguments au contrôleur
         ControllerCentre::$action($args);
         break;
