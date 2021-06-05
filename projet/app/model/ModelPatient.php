@@ -65,4 +65,31 @@ class ModelPatient {
         }
     }
 
+    public static function insert($nom, $prenom, $adresse) {
+        try {
+            $database = Model::getInstance();
+
+            // recherche de la valeur de la clé = max(id) + 1
+            $query = "select max(id) from patient";
+            $statement = $database->query($query);
+            $tuple = $statement->fetch();
+            $id = $tuple['0'];
+            $id++;
+
+            // ajout d'un nouveau tuple;
+            $query = "insert into patient value (:id, :nom, :prenom, :adresse)";
+            $statement = $database->prepare($query);
+            $statement->execute([
+                'id' => $id,
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'adresse' => $adresse,
+            ]);
+            return $id;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return -1;
+        }
+    }
+
 }
