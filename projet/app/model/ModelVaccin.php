@@ -82,6 +82,41 @@ class ModelVaccin {
         }
     }
 
+    public static function getAllLabel() {
+        try {
+            $database = Model::getInstance();
+            $query = "select label from vaccin";
+            $statement = $database->prepare($query);
+            $statement->execute();
+            $results = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+            return $results;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return NULL;
+        }
+    }
+
+    // Fonction pour mettre à jour le nombre de dose d'un vaccin
+    public static function update($label, $doses) {
+        try {
+            $database = Model::getInstance();
+
+            // Mise à jour du nombre de dose pour un vaccin;
+            
+            $query = "UPDATE vaccin SET doses =:doses WHERE label=:label";  
+
+            $statement = $database->prepare($query);
+            $statement->execute([
+                'label' => $label,
+                'doses' => $doses,
+            ]);
+            return $label;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return -2;
+        }
+    }
+
 }
 ?>
 <!-- ----- fin ModelVaccin -->
