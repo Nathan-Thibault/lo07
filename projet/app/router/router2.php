@@ -27,7 +27,9 @@ switch ($action) {
     case "vaccinReadAll" :
     case "vaccinCreate" :
     case "vaccinCreated" :
-        
+    case "vaccinUpdate" :
+    case "vaccinUpdated" :
+
 
         // --- Passage des arguments au contrôleur
         ControllerVaccin::$action($args);
