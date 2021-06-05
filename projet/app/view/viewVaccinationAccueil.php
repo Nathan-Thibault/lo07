@@ -9,7 +9,7 @@
     ?>
   </div>   
   
-  
+    
   <?php
   include 'fragment/fragmentVaccinationFooter.html';
   ?>
