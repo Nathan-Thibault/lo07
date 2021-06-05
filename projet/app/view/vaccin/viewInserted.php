@@ -13,7 +13,7 @@ require ($root . '/app/view/fragment/fragmentVaccinationHeader.html');
     <!-- ===================================================== -->
     <?php
     if ($results) {
-     echo ("<h3>Le nouveau vin a été ajouté </h3>");
+     echo ("<h3>Le nouveau vaccin a été ajouté </h3>");
      echo("<ul>");
      echo ("<li>id = " . $results . "</li>");
      echo ("<li>cru = " . $_GET['label'] . "</li>");
