@@ -42,6 +42,30 @@ class ControllerVaccin {
         $vue = $root . '/app/view/vaccin/viewInserted.php';
         require ($vue);
     }
+    
+    public static function vaccinUpdate() {
+        // On va chercher la liste des vaccins 
+        $results = ModelVaccin::getAllLabel();
+        
+        
+        // ----- Construction chemin de la vue vers un formulaire pour mettre à jour le vaccin
+        include 'config.php';
+        $vue = $root . '/app/view/vaccin/viewUpdate.php';
+        require ($vue);
+    }
+    
+    public static function vaccinUpdated() {
+        // On va aller update le vaccin dans le ModelVaccin
+        $results = ModelVaccin::update(
+                        htmlspecialchars($_GET['label']), htmlspecialchars($_GET['doses'])
+        );
+        
+                // ----- Construction chemin de la vue vers un formulaire pour mettre à jour le vaccin
+        include 'config.php';
+        $vue = $root . '/app/view/vaccin/viewUpdated.php';
+        require ($vue);
+        
+    }
 
 }
 ?>
