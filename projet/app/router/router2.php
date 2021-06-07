@@ -57,7 +57,7 @@ switch ($action) {
         break;
 
     case "rendezVousReadPatient" :
-    case "rendezVousNbr" :
+    case "m" :
         
 
         ControllerRendezVous::$action($args);
