@@ -51,6 +51,7 @@ class ModelRendezVous {
         return $this->vaccin_id;
     }
 
+    // Méthode permettant de récupérer l'ensemble des informations à propos des patients pour le formulaire
     public static function getAllPatient() {
         try {
             $database = Model::getInstance();
@@ -62,6 +63,80 @@ class ModelRendezVous {
         } catch (PDOException $e) {
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return NULL;
+        }
+    }
+
+    // récupère le nombre d'injection recu par le patient
+    public static function getNbrInjection($patientId) {
+        try {
+            $database = Model::getInstance();
+
+
+            $query = "SELECT max(injection) FROM rendezvous WHERE patient_id = :patientId";
+            $statement = $database->prepare($query);
+            $statement->execute([
+                'patientId' => $patientId
+            ]);
+            $results = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+            return $results;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return -1;
+        }
+    }
+
+    // Récupère l'id du vaccin recu par patient
+    public static function getVaccinId($patientId) {
+        try {
+            $database = Model::getInstance();
+
+
+            $query = "SELECT vaccin_id FROM rendezvous WHERE patient_id = :patientId LIMIT 1";
+            $statement = $database->prepare($query);
+            $statement->execute([
+                'patientId' => $patientId
+            ]);
+            $results = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+            return $results;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return -1;
+        }
+    }
+
+    // recupere le nombre d'injection necessaire pour le vaccin du patient
+    public static function getNbrInjectionVaccin($vaccinId) {
+        try {
+            $database = Model::getInstance();
+
+
+            $query = "SELECT doses FROM vaccin WHERE id = :vaccinId";
+            $statement = $database->prepare($query);
+            $statement->execute([
+                'vaccinId' => $vaccinId
+            ]);
+            $results = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+            return $results;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return -1;
+        }
+    }
+
+    // recupère l'id des centres qui possèdent des doses pour le vaccin du patient.
+    public static function getCentreId($vaccinId) {
+        try {
+            $database = Model::getInstance();
+            $query = "SELECT centre_id FROM stock WHERE vaccin_id = :vaccinId and quantite >0";
+            $statement = $database->prepare($query);
+            $statement->execute([
+                'vaccinId' => $vaccinId
+            ]);
+            $results = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+            return $results;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return -1;
         }
     }
 
