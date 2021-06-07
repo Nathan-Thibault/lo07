@@ -1,34 +1,16 @@
-
 <!-- ----- début viewPatient -->
 <?php
-require ($root . '/app/view/fragment/fragmentVaccinationHeader.html');
+require($root . '/app/view/fragment/fragmentVaccinationHeader.html');
+include $root . '/app/view/fragment/fragmentVaccinationMenu.html';
+include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
+
+echo($vaccinId."<br/>");
+echo($patient->getId());
+
+echo("<pre>");
+print_r($centresId);
+echo("</pre>");
+
+include $root . '/app/view/fragment/fragmentVaccinationFooter.html';
 ?>
-
-<body>
-    <div class="container">
-        <?php
-        include $root . '/app/view/fragment/fragmentVaccinationMenu.html';
-        include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
-
-        // $results contient un tableau avec la liste des clés.
-        ?>
-
-        <?php
-        echo($vaccinId);
-        echo($patientId);
-
-        echo("<pre>");
-        print_r($centresId);
-        echo("</pre>");
-        
-        
-        
-        ?>
-
-        
-        <p/>
-    </div>
-
-    <?php include $root . '/app/view/fragment/fragmentVaccinationFooter.html'; ?>
-
-    <!-- ----- fin viewId -->
+<!-- ----- fin viewId -->

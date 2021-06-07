@@ -125,7 +125,8 @@ class ModelVaccin {
             $statement->execute([
                 'id' => $id
             ]);
-            return $statement->fetchAll(PDO::FETCH_CLASS, "ModelVaccin");
+            $array = $statement->fetchAll(PDO::FETCH_CLASS, "ModelVaccin");
+            return array_pop($array);
         } catch (PDOException $e) {
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return NULL;

@@ -52,8 +52,7 @@ class ModelStock
 
     public function  getVaccin()
     {
-        $vaccin_array = ModelVaccin::getOne($this->getVaccinId());
-        return array_pop($vaccin_array);
+        return ModelVaccin::getOne($this->getVaccinId());
     }
 
     public static function getAll() {
@@ -95,6 +94,23 @@ class ModelStock
         } catch (PDOException $e) {
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return false;
+        }
+    }
+
+    // recupère l'id des centres qui possèdent des doses pour le vaccin
+    public static function getCentresAvecStock($vaccinId) {
+        try {
+            $database = Model::getInstance();
+            $query = "SELECT centre_id FROM stock WHERE vaccin_id = :vaccinId and quantite >0";
+            $statement = $database->prepare($query);
+            $statement->execute([
+                'vaccinId' => $vaccinId
+            ]);
+            $results = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+            return $results;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return -1;
         }
     }
 }
