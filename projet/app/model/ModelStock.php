@@ -98,17 +98,33 @@ class ModelStock
     }
 
     //pour tous les vaccins, ajoute une quantité de doses au stock existant d'un centre donné
+    //ou créer le stock s'il n'existe pas encore
     public static function updateCentreStock($centre_id, $quantites)
     {
         try {
             $database = Model::getInstance();
             foreach ($quantites as $vaccin_id => $quantite) {
-                $statement = $database->prepare("update stock set quantite = quantite + :q where centre_id = :cid and vaccin_id = :vid");
+                $statement = $database->prepare("select count(quantite) from stock where (vaccin_id = :vid and centre_id = :cid)");
                 $statement->execute([
-                    "q" => $quantite,
                     "cid" => $centre_id,
                     "vid" => $vaccin_id
                 ]);
+                $array= $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+                if(array_pop($array)>0){
+                    $statement = $database->prepare("update stock set quantite = quantite + :q where (centre_id = :cid and vaccin_id = :vid)");
+                    $statement->execute([
+                        "q" => $quantite,
+                        "cid" => $centre_id,
+                        "vid" => $vaccin_id
+                    ]);
+                }else {
+                    $statement = $database->prepare("insert into stock values (:cid, :vid, :q)");
+                    $statement->execute([
+                        "q" => $quantite,
+                        "cid" => $centre_id,
+                        "vid" => $vaccin_id
+                    ]);
+                }
             }
             return true;
         } catch (PDOException $e) {

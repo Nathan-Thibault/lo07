@@ -53,7 +53,10 @@ switch ($action) {
     case "stockReadAll" :
     case "stockGetCount" :
     case "stockAdd" :
-    case "stockAdded" :
+    case "stockUpdate" :
+    case "stockTransfer" :
+    case "stockTransfered" :
+    case "stockPartiallyTransfered" :
         ControllerStock::$action($args);
         break;
 
