@@ -64,6 +64,22 @@ class ModelCentre
         }
     }
 
+    public static function getOne($id)
+    {
+        try {
+            $database = Model::getInstance();
+            $statement = $database->prepare("select * from centre where id = :id");
+            $statement->execute([
+                'id' => $id
+            ]);
+            $array = $statement->fetchAll(PDO::FETCH_CLASS, "ModelCentre");
+            return array_pop($array);
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return NULL;
+        }
+    }
+
     public static function insert($label, $adresse)
     {
         try {

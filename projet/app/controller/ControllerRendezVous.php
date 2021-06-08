@@ -18,18 +18,24 @@ class ControllerRendezVous
         require($vue);
     }
 
-    public static function rendezVousNbr()
+    public static function rendezVousGestionDossier()
     {
         $patient = ModelPatient::getOne(htmlspecialchars($_GET['patient_id']));
 
-        // $results est une colonne avec le nombre d'injection dans la premierre ligne du tableau (indice 0)
-        $results = ModelRendezVous::getNbrInjection($patient->getId());
         // $nbrInjection contient le nombre de dose déjà recu par le patient selectionné
-        $nbrInjection = $results[0];
+        $nbrInjection = ModelRendezVous::getNbrInjection($patient->getId());
 
-        if ($nbrInjection == 0) {
-            // Compléter cette partie 
+        if ($nbrInjection <= 0) {
+            //le patient choisit alors un centre de vaccination parmi la liste des centres
+            //disposant d'au moins une dose
+            $results = ModelStock::getCentresAvecStock();
 
+            // ----- Construction chemin de la vue
+            include 'config.php';
+            $vue = $root . '/app/view/rendezVous/viewSelectCentre.php';
+            if (DEBUG)
+                echo("ControllerRendezVous : rendezVousGestionDossier : vue = $vue");
+            require($vue);
         } else {
             // cela veut dire le patient a déjà recu au moins 1 dose d'un vaccin
             // On récupère l'id du vaccin 
@@ -47,23 +53,12 @@ class ControllerRendezVous
                 // SinonSi Le nombre d'injection recu est inférieur au nombre necessaire
             } elseif ($nbrInjection <= $NbrInjectionNecessaire) {
                 // On va chercher la liste des id des centres qui ont encore des doses du vaccin du patient
-                $centresId = ModelStock::getCentresAvecStock($vaccinId);
+                $centresId = ModelStock::getCentresAvecStockPourVaccin($vaccinId);
                 // $centreId est alors un tableau associatif avec comme valeur les id des centres ayant le vaccin.
 
                 // Il faut désormais proposer tous les centres au patient dans un formulaire
 
             }
         }
-
-        //pour affichage dans test
-        $vaccinId = ModelRendezVous::getVaccinId($patient->getId());
-        $centresId = ModelStock::getCentresAvecStock($vaccinId);
-        // ----- Construction chemin de la vue
-        include 'config.php';
-        $vue = $root . '/app/view/rendezVous/viewTest.php';
-        if (DEBUG)
-            echo("ControllerRendezVous : rendezVous : vue = $vue");
-        require($vue);
-
     }
 }

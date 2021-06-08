@@ -67,6 +67,7 @@ class ModelStock
         }
     }
 
+    //retourne la liste des centres avec leur total de doses disponibles
     public static function getCount() {
         try {
             $database = Model::getInstance();
@@ -79,6 +80,7 @@ class ModelStock
         }
     }
 
+    //pour tous les vaccins, ajoute une quantité de doses au stock existant d'un centre donné
     public static function updateCentreStock($centre_id, $quantites) {
         try {
             $database = Model::getInstance();
@@ -97,8 +99,8 @@ class ModelStock
         }
     }
 
-    // recupère l'id des centres qui possèdent des doses pour le vaccin
-    public static function getCentresAvecStock($vaccinId) {
+    // recupère l'id des centres qui possèdent des doses pour un vaccin donné
+    public static function getCentresAvecStockPourVaccin($vaccinId) {
         try {
             $database = Model::getInstance();
             $query = "SELECT centre_id FROM stock WHERE vaccin_id = :vaccinId and quantite >0";
@@ -112,6 +114,25 @@ class ModelStock
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return -1;
         }
+    }
+
+    // recupère l'id des centres qui possèdent au moins une dose
+    public static function getCentresAvecStock() {
+        $stocks = self::getCount();
+
+        //on enlève les centres où le stock est vide de la liste
+        $nonVide = function ($stock){
+            return $stock['sum'] > 0;
+        };
+        $stocks = array_filter($stocks, $nonVide);
+
+        //on transforme la liste pour qu'elle contienne les centres
+        $replacebyCentreLabel = function ($stock){
+            return ModelCentre::getOne($stock['centre_id']);
+        };
+        $stocks = array_map($replacebyCentreLabel, $stocks);
+
+        return array_values($stocks);
     }
 }
 
