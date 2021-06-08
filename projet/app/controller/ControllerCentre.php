@@ -12,7 +12,7 @@ class ControllerCentre
         include 'config.php';
         $vue = $root . '/app/view/centre/viewAll.php';
         if (DEBUG)
-            echo("ControllerVaccin : vinReadAll : vue = $vue");
+            echo("ControllerVaccin : centreReadAll : vue = $vue");
         require($vue);
     }
 
@@ -34,6 +34,19 @@ class ControllerCentre
         include 'config.php';
         $vue = $root . '/app/view/centre/viewInserted.php';
         require($vue);
+    }
+    
+    public static function centreReadCentre() 
+    {
+        $patient_id = $_GET["patient_id"];
+        $results = ModelCentre::getAll();
+                // ----- Construction chemin de la vue
+        include 'config.php';
+        $vue = $root . '/app/view/centre/viewSelectCentre.php';
+        if (DEBUG)
+            echo("ControllerVaccin : centreReadAll : vue = $vue");
+        require($vue);
+        
     }
 
 }

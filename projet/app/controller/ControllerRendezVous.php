@@ -4,12 +4,13 @@ require_once '../model/ModelRendezVous.php';
 require_once '../model/ModelStock.php';
 require_once '../model/ModelVaccin.php';
 
-class ControllerRendezVous
-{
+class ControllerRendezVous {
 
-    public static function rendezVousReadPatient()
-    {
+    public static function rendezVousReadPatient($args) {
         $results = ModelPatient::getAll();
+        $target = $args['target'];
+        if (DEBUG)
+            echo 'ControllerRendezVous:vaccinReadId : target =' . $target . '<br/>';
         // ----- Construction chemin de la vue
         include 'config.php';
         $vue = $root . '/app/view/rendezVous/viewPatient.php';
@@ -18,8 +19,7 @@ class ControllerRendezVous
         require($vue);
     }
 
-    public static function rendezVousGestionDossier()
-    {
+    public static function rendezVousGestionDossier() {
         $patient_id = htmlspecialchars($_GET['patient_id']);
 
         // $nbrInjection contient le nombre de dose déjà recu par le patient selectionné
@@ -64,8 +64,7 @@ class ControllerRendezVous
         }
     }
 
-    public static function rendezVousPrendrePremier($args)
-    {
+    public static function rendezVousPrendrePremier($args) {
         //récupère l'id du patient depuis les arguments
         $patient_id = $args['patient_id'];
         $centre_id = $args['centre_id'];
@@ -91,8 +90,7 @@ class ControllerRendezVous
         self::rendezVousVoirDossier($patient_id, "Le rendez-vous a été créé");
     }
 
-    public static function rendezVousPrendre($args)
-    {
+    public static function rendezVousPrendre($args) {
         //récupère l'id du patient depuis les arguments
         $patient_id = $args['patient_id'];
         $centre_id = $args['centre_id'];
@@ -106,8 +104,7 @@ class ControllerRendezVous
         self::rendezVousVoirDossier($patient_id, "Le rendez-vous a été créé");
     }
 
-    public static function rendezVousVoirDossier($patient_id, $titre)
-    {
+    public static function rendezVousVoirDossier($patient_id, $titre) {
         $results = ModelRendezVous::getAllForPatient($patient_id);
         $replace_info = function ($rdv) {
             $patient = ModelPatient::getOne($rdv->getPatientId());
@@ -124,10 +121,10 @@ class ControllerRendezVous
                     $injection = $rdv->getInjection();
             }
             return [
-                'patient' => $patient->getPrenom() . " " . $patient->getNom(),
-                'centre' => $centre->getLabel() . " : " . $centre->getAdresse(),
-                'vaccin' => $vaccin->getLabel(),
-                'injection' => $injection
+        'patient' => $patient->getPrenom() . " " . $patient->getNom(),
+        'centre' => $centre->getLabel() . " : " . $centre->getAdresse(),
+        'vaccin' => $vaccin->getLabel(),
+        'injection' => $injection
             ];
         };
         $results = array_map($replace_info, $results);
@@ -138,4 +135,5 @@ class ControllerRendezVous
             echo("ControllerRendezVous : rendezVousVoirDossier : vue = $vue");
         require($vue);
     }
+
 }
