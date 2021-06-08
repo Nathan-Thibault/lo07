@@ -32,7 +32,7 @@ class ControllerStock
     {
         $centres = ModelCentre::getAll();
         $vaccins = ModelVaccin::getAll();
-        //enlève les vaccins qui ne sont plus en service (identifié par nombre de doses négatif)
+        //enlève les vaccins qui ne sont plus en service (identifié par nombre de doses nul)
         $vaccins = array_filter($vaccins, function ($vaccin){
             return $vaccin->getDoses() > 0;
         });

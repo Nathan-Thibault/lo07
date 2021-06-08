@@ -66,8 +66,8 @@ class ControllerVaccin
     //bloque l'ajout de stock de ce vaccin et supprime les stocks actuels si option sélectionné
     public static function vaccinRemove()
     {
-        //on identifie les vaccins retirer par en nombre de doses négatif
-        ModelVaccin::update($_GET['vaccin_id'], -1);
+        //on identifie les vaccins retirer par en nombre de doses nul
+        ModelVaccin::update($_GET['vaccin_id'], 0);
         if(array_key_exists('remove_stock', $_GET)){
             ModelStock::removeVaccin($_GET['vaccin_id']);
         }
