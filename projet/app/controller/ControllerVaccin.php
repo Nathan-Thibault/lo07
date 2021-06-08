@@ -28,6 +28,7 @@ class ControllerVaccin
     // Affiche un formulaire pour sélectionner un id qui existe
     public static function vaccinReadId($args) {
         $results = ModelVaccin::getAll();
+        $centre_id = $_GET["centre_id"];
 
         $target = $args['target'];
         if (DEBUG) echo 'ControllerVaccin:vaccinReadId : target ='.$target.'<br/>';
