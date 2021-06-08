@@ -18,10 +18,12 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
     // La liste des vaccins est dans une variable $results
 
     foreach ($results as $element) {
-        printf("<tr><td>%d</td><td>%s</td><td>%d</td></tr>", $element->getId(),
-            $element->getLabel(), $element->getDoses());
+        if($element->getDoses()<0){
+            printf("<tr class='warning'><td>%d</td><td>%s</td><td>retiré</td></tr>", $element->getId(), $element->getLabel());
+        }else{
+            printf("<tr><td>%d</td><td>%s</td><td>%d</td></tr>", $element->getId(), $element->getLabel(), $element->getDoses());
+        }
     }
-
     ?>
     </tbody>
 </table>

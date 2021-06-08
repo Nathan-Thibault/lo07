@@ -32,6 +32,10 @@ class ControllerStock
     {
         $centres = ModelCentre::getAll();
         $vaccins = ModelVaccin::getAll();
+        //enlève les vaccins qui ne sont plus en service (identifié par nombre de doses négatif)
+        $vaccins = array_filter($vaccins, function ($vaccin){
+            return $vaccin->getDoses() > 0;
+        });
         // ----- Construction chemin de la vue
         include 'config.php';
         $vue = $root . '/app/view/stock/viewAdd.php';

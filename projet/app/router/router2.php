@@ -32,8 +32,9 @@ switch ($action) {
     case "vaccinReadAll" :
     case "vaccinCreate" :
     case "vaccinCreated" :
-    case "vaccinUpdate" :
+    case "vaccinReadId" :
     case "vaccinUpdated" :
+    case "vaccinRemove" :
         ControllerVaccin::$action($args);
         break;
 

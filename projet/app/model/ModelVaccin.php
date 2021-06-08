@@ -97,20 +97,15 @@ class ModelVaccin {
     }
 
     // Fonction pour mettre à jour le nombre de dose d'un vaccin
-    public static function update($label, $doses) {
+    public static function update($id, $doses) {
         try {
             $database = Model::getInstance();
-
-            // Mise à jour du nombre de dose pour un vaccin;
-            
-            $query = "UPDATE vaccin SET doses =:doses WHERE label=:label";  
-
-            $statement = $database->prepare($query);
+            $statement = $database->prepare("update vaccin set doses = :doses where id= :id");
             $statement->execute([
-                'label' => $label,
+                'id' => $id,
                 'doses' => $doses,
             ]);
-            return $label;
+            return $id;
         } catch (PDOException $e) {
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return -2;

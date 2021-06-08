@@ -25,6 +25,19 @@ class ControllerVaccin
         require($vue);
     }
 
+    // Affiche un formulaire pour sélectionner un id qui existe
+    public static function vaccinReadId($args) {
+        $results = ModelVaccin::getAll();
+
+        $target = $args['target'];
+        if (DEBUG) echo 'ControllerVaccin:vaccinReadId : target ='.$target.'<br/>';
+
+        // ----- Construction chemin de la vue
+        include 'config.php';
+        $vue = $root . '/app/view/vaccin/viewId.php';
+        require ($vue);
+    }
+
     public static function vaccinCreated()
     {
         $results = ModelVaccin::insert(
@@ -36,23 +49,11 @@ class ControllerVaccin
         require($vue);
     }
 
-    public static function vaccinUpdate()
-    {
-        // On va chercher la liste des vaccins 
-        $results = ModelVaccin::getAllLabel();
-
-
-        // ----- Construction chemin de la vue vers un formulaire pour mettre à jour le vaccin
-        include 'config.php';
-        $vue = $root . '/app/view/vaccin/viewUpdate.php';
-        require($vue);
-    }
-
     public static function vaccinUpdated()
     {
         // On va aller update le vaccin dans le ModelVaccin
         $results = ModelVaccin::update(
-            htmlspecialchars($_GET['label']), htmlspecialchars($_GET['doses'])
+            htmlspecialchars($_GET['vaccin_id']), htmlspecialchars($_GET['doses'])
         );
 
         // ----- Construction chemin de la vue vers un formulaire pour mettre à jour le vaccin
@@ -62,6 +63,16 @@ class ControllerVaccin
 
     }
 
+    //bloque l'ajout de stock de ce vaccin et supprime les stocks actuels si option sélectionné
+    public static function vaccinRemove()
+    {
+        //on identifie les vaccins retirer par en nombre de doses négatif
+        ModelVaccin::update($_GET['vaccin_id'], -1);
+        if(array_key_exists('remove_stock', $_GET)){
+            ModelStock::removeVaccin($_GET['vaccin_id']);
+        }
+        self::vaccinReadAll();
+    }
 }
 
 ?>

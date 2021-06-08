@@ -165,6 +165,19 @@ class ModelStock
 
         return array_values($stocks);
     }
+
+    //supprime tous les stocks d'un vaccin
+    public static function removeVaccin($vaccin_id)
+    {
+        try {
+            $database = Model::getInstance();
+            $statement = $database->prepare("delete from stock where vaccin_id = ?");
+            return $statement->execute([$vaccin_id]);;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return -1;
+        }
+    }
 }
 
 ?>
