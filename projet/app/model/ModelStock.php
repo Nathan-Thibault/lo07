@@ -6,7 +6,8 @@ class ModelStock
 {
     private $centre_id, $vaccin_id, $quantite;
 
-    public function __construct($centre_id = NULL, $vaccin_id = NULL, $quantite = NULL) {
+    public function __construct($centre_id = NULL, $vaccin_id = NULL, $quantite = NULL)
+    {
         // valeurs nulles si pas de passage de parametres
         if (!is_null($centre_id)) {
             $this->centre_id = $centre_id;
@@ -45,17 +46,18 @@ class ModelStock
         $this->quantite = $quantite;
     }
 
-    public function  getCentre()
+    public function getCentre()
     {
         return ModelCentre::getLabelWithId($this->getCentreId());
     }
 
-    public function  getVaccin()
+    public function getVaccin()
     {
         return ModelVaccin::getOne($this->getVaccinId());
     }
 
-    public static function getAll() {
+    public static function getAll()
+    {
         try {
             $database = Model::getInstance();
             $statement = $database->prepare("select * from stock");
@@ -68,7 +70,8 @@ class ModelStock
     }
 
     //retourne la liste des centres avec leur total de doses disponibles
-    public static function getCount() {
+    public static function getCount()
+    {
         try {
             $database = Model::getInstance();
             $statement = $database->prepare("select centre_id, sum(quantite) as sum from stock group by centre_id order by sum desc");
@@ -80,11 +83,26 @@ class ModelStock
         }
     }
 
-    //pour tous les vaccins, ajoute une quantité de doses au stock existant d'un centre donné
-    public static function updateCentreStock($centre_id, $quantites) {
+    //retourne la liste des vaccins en stock pour un centre donné
+    public static function getStockDuCentre($centre_id)
+    {
         try {
             $database = Model::getInstance();
-            foreach ($quantites as $vaccin_id => $quantite){
+            $statement = $database->prepare("select * from stock where centre_id = ?");
+            $statement->execute([$centre_id]);
+            return $statement->fetchAll(PDO::FETCH_CLASS, "ModelStock");
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return NULL;
+        }
+    }
+
+    //pour tous les vaccins, ajoute une quantité de doses au stock existant d'un centre donné
+    public static function updateCentreStock($centre_id, $quantites)
+    {
+        try {
+            $database = Model::getInstance();
+            foreach ($quantites as $vaccin_id => $quantite) {
                 $statement = $database->prepare("update stock set quantite = quantite + :q where centre_id = :cid and vaccin_id = :vid");
                 $statement->execute([
                     "q" => $quantite,
@@ -99,17 +117,30 @@ class ModelStock
         }
     }
 
-    // recupère l'id des centres qui possèdent des doses pour un vaccin donné
-    public static function getCentresAvecStockPourVaccin($vaccinId) {
+    //enlève une dose d'un vaccin donné au stock d'un centre donnée
+    public static function prendreDose($centre_id, $vaccin_id)
+    {
         try {
             $database = Model::getInstance();
-            $query = "SELECT centre_id FROM stock WHERE vaccin_id = :vaccinId and quantite >0";
-            $statement = $database->prepare($query);
-            $statement->execute([
-                'vaccinId' => $vaccinId
+            $statement = $database->prepare("update stock set quantite = quantite - 1 where centre_id = :c and vaccin_id = :v");
+            return $statement->execute([
+                "c" => $centre_id,
+                "v" => $vaccin_id
             ]);
-            $results = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
-            return $results;
+        } catch (PDOException $e) {
+            printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
+            return false;
+        }
+    }
+
+    // recupère l'id des centres qui possèdent des doses pour un vaccin donné
+    public static function getCentresAvecStockPourVaccin($vaccinId)
+    {
+        try {
+            $database = Model::getInstance();
+            $statement = $database->prepare("select centre_id from stock where vaccin_id = ? and quantite > 0");
+            $statement->execute([$vaccinId]);
+            return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
         } catch (PDOException $e) {
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return -1;
@@ -117,17 +148,17 @@ class ModelStock
     }
 
     // recupère l'id des centres qui possèdent au moins une dose
-    public static function getCentresAvecStock() {
+    public static function getCentresAvecStock()
+    {
         $stocks = self::getCount();
 
         //on enlève les centres où le stock est vide de la liste
-        $nonVide = function ($stock){
+        $stocks = array_filter($stocks, function ($stock) {
             return $stock['sum'] > 0;
-        };
-        $stocks = array_filter($stocks, $nonVide);
+        });
 
         //on transforme la liste pour qu'elle contienne les centres
-        $replacebyCentreLabel = function ($stock){
+        $replacebyCentreLabel = function ($stock) {
             return ModelCentre::getOne($stock['centre_id']);
         };
         $stocks = array_map($replacebyCentreLabel, $stocks);

@@ -20,17 +20,17 @@ class ControllerRendezVous
 
     public static function rendezVousGestionDossier()
     {
-        $patient = ModelPatient::getOne(htmlspecialchars($_GET['patient_id']));
+        $patient_id = htmlspecialchars($_GET['patient_id']);
 
         // $nbrInjection contient le nombre de dose déjà recu par le patient selectionné
-        $nbrInjection = ModelRendezVous::getNbrInjection($patient->getId());
+        $nbrInjection = ModelRendezVous::getNbrInjection($patient_id);
 
         if ($nbrInjection <= 0) {
-            //le patient choisit alors un centre de vaccination parmi la liste des centres
-            //disposant d'au moins une dose
+            //choisir un centre de vaccination parmi la liste des centres disposant d'au moins une dose
             $results = ModelStock::getCentresAvecStock();
+            $titre = "Le patient n'a jamais reçu de dose";
 
-            // ----- Construction chemin de la vue
+            //formulaire pour sélectionner un centre
             include 'config.php';
             $vue = $root . '/app/view/rendezVous/viewSelectCentre.php';
             if (DEBUG)
@@ -39,26 +39,103 @@ class ControllerRendezVous
         } else {
             // cela veut dire le patient a déjà recu au moins 1 dose d'un vaccin
             // On récupère l'id du vaccin 
-            $vaccinId = ModelRendezVous::getVaccinId($patient->getId());
+            $vaccin_id = ModelRendezVous::getVaccinUtilise($patient_id);
 
             // On va maintenant récupérer le nombre d'injection nécessaire pour le vaccin en question
-            $NbrInjectionNecessaire = ModelVaccin::getOne($vaccinId)->getDoses();
-
-            // On compare le nombre d'injection necessaire au nombre d'injection recu pour savoir si encore besoin d'une injection
-            if ($nbrInjection == $NbrInjectionNecessaire) {
-                // le patient n'a plus besoin de recevoir de dose
-                // Il faut compléter en affichant la liste des vaccins recu
-
-
-                // SinonSi Le nombre d'injection recu est inférieur au nombre necessaire
-            } elseif ($nbrInjection <= $NbrInjectionNecessaire) {
+            $NbrInjectionNecessaire = ModelVaccin::getOne($vaccin_id)->getDoses();
+            if ($nbrInjection < $NbrInjectionNecessaire) {
                 // On va chercher la liste des id des centres qui ont encore des doses du vaccin du patient
-                $centresId = ModelStock::getCentresAvecStockPourVaccin($vaccinId);
-                // $centreId est alors un tableau associatif avec comme valeur les id des centres ayant le vaccin.
+                $results = ModelStock::getCentresAvecStockPourVaccin($vaccin_id);
+                $results = array_map(function ($centre_id) {
+                    return ModelCentre::getOne($centre_id);
+                }, $results);
+                $titre = "Le patient doit recevoir une dose suplémentaire";
 
-                // Il faut désormais proposer tous les centres au patient dans un formulaire
-
+                //formulaire pour sélectionner un centre
+                include 'config.php';
+                $vue = $root . '/app/view/rendezVous/viewSelectCentre.php';
+                if (DEBUG)
+                    echo("ControllerRendezVous : rendezVousGestionDossier : vue = $vue");
+                require($vue);
+            } else {
+                // le patient n'a plus besoin de recevoir de dose on affiche son dossier
+                self::rendezVousVoirDossier($patient_id, "Le patient est vacciné, voici son dossier");
             }
         }
+    }
+
+    public static function rendezVousPrendrePremier($args)
+    {
+        //récupère l'id du patient depuis les arguments
+        $patient_id = $args['patient_id'];
+        $centre_id = $args['centre_id'];
+
+        $stocks = ModelStock::getStockDuCentre($centre_id);
+        //transforme la liste des stock pour avoir une liste de nombre de doses par id de vaccin
+        $keys = array_map(function ($stock) {
+            return $stock->getVaccinId();
+        }, $stocks);
+        $values = array_map(function ($stock) {
+            return $stock->getQuantite();
+        }, $stocks);
+        $stocks = array_combine($keys, $values);
+
+        //sélectionne un id de vaccin aléatoirement parmis la liste des id de vaccins avec le stock le plus grand
+        $array_max = array_keys($stocks, max($stocks));
+        $vaccin_id = $array_max[array_rand($array_max, 1)];
+
+        //mise à jour du stock
+        ModelStock::prendreDose($centre_id, $vaccin_id);
+        //création du rdv
+        ModelRendezVous::setRendezVous($centre_id, $patient_id, 1, $vaccin_id);
+        self::rendezVousVoirDossier($patient_id, "Le rendez-vous a été créé");
+    }
+
+    public static function rendezVousPrendre($args)
+    {
+        //récupère l'id du patient depuis les arguments
+        $patient_id = $args['patient_id'];
+        $centre_id = $args['centre_id'];
+        $injection = $args['injection'] + 1;
+        $vaccin_id = $args['vaccin_id'];
+
+        //mise à jour du stock
+        ModelStock::prendreDose($centre_id, $vaccin_id);
+        //création du rdv
+        ModelRendezVous::setRendezVous($centre_id, $patient_id, $injection, $vaccin_id);
+        self::rendezVousVoirDossier($patient_id, "Le rendez-vous a été créé");
+    }
+
+    public static function rendezVousVoirDossier($patient_id, $titre)
+    {
+        $results = ModelRendezVous::getAllForPatient($patient_id);
+        $replace_info = function ($rdv) {
+            $patient = ModelPatient::getOne($rdv->getPatientId());
+            $centre = ModelCentre::getOne($rdv->getCentreId());
+            $vaccin = ModelVaccin::getOne($rdv->getVaccinId());
+            switch ($rdv->getInjection()) {
+                case 1 :
+                    $injection = 'première';
+                    break;
+                case 2 :
+                    $injection = 'seconde';
+                    break;
+                default :
+                    $injection = $rdv->getInjection();
+            }
+            return [
+                'patient' => $patient->getPrenom() . " " . $patient->getNom(),
+                'centre' => $centre->getLabel() . " : " . $centre->getAdresse(),
+                'vaccin' => $vaccin->getLabel(),
+                'injection' => $injection
+            ];
+        };
+        $results = array_map($replace_info, $results);
+        // ----- Construction chemin de la vue
+        include 'config.php';
+        $vue = $root . '/app/view/rendezVous/viewDossier.php';
+        if (DEBUG)
+            echo("ControllerRendezVous : rendezVousVoirDossier : vue = $vue");
+        require($vue);
     }
 }

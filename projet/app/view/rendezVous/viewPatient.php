@@ -22,4 +22,4 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
 
 <?php include $root . '/app/view/fragment/fragmentVaccinationFooter.html'; ?>
 
-<!-- ----- fin viewId -->
+<!-- ----- fin viewPatient -->
