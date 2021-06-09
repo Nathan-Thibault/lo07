@@ -9,10 +9,11 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
 <form role="form" method='get' action='router2.php'>
     <div class="form-group">
         <input type="hidden" name='action' value='<?php echo $target;?>'>
-       
-        <input type="hidden" name="centre_id" value='<?php echo($centre_id);?>'>
-        <input type="hidden" name="patient_id" value='<?php echo($patient_id);?>'>
-        <input type="hidden" name="injection" value='0'>
+        <?php
+        if(isset($patient_id)){
+            echo '<input type="hidden" name="patient_id" value="'.$patient_id.'">';
+        }
+        ?>
         <label for="label">Vaccin : </label> <select class="form-control" id='label' name='vaccin_id' style="width: 200px">
             <?php
             // L'ensemble des label de vaccin sont dans le tableau $results

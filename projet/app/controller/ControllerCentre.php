@@ -39,12 +39,18 @@ class ControllerCentre
     public static function centreReadCentre() 
     {
         $patient_id = htmlspecialchars($_GET['patient_id']);
-        $results = ModelCentre::getAll();
-                // ----- Construction chemin de la vue
+        $vaccin_id = htmlspecialchars($_GET['vaccin_id']);
+        // On va chercher la liste des id des centres qui ont encore des doses du vaccin du patient
+        $results = ModelStock::getCentresAvecStockPourVaccin($vaccin_id);
+        // On récupère les centres à partir de leur id
+        $results = array_map(function ($centre_id) {
+            return ModelCentre::getOne($centre_id);
+        }, $results);
+        // ----- Construction chemin de la vue
         include 'config.php';
         $vue = $root . '/app/view/centre/viewSelectCentre.php';
         if (DEBUG)
-            echo("ControllerVaccin : centreReadAll : vue = $vue");
+            echo("ControllerCentre : centreReadAll : vue = $vue");
         require($vue);
         
     }

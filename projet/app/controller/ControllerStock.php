@@ -96,7 +96,9 @@ class ControllerStock
             $stocks = ModelStock::getStockDuCentre($centre_id_source);
             foreach ($stocks as $stock){
                 $vaccin = ModelVaccin::getOne($stock->getVaccinId());
-                $results[$vaccin->getId()] = ['label' => $vaccin->getLabel(), 'quantite' => $stock->getQuantite()];
+                if($stock->getQuantite()>0) {
+                    $results[$vaccin->getId()] = ['label' => $vaccin->getLabel(), 'quantite' => $stock->getQuantite()];
+                }
             }
             //formulaire pour choisir le stock à transférer
             include 'config.php';

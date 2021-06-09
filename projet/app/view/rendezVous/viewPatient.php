@@ -7,8 +7,13 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
 
 <form role="form" method='get' action='router2.php'>
     <div class="form-group">
-        <input type="hidden" name='action' value='<?php echo $target;?>'>
-        <label for="patient">Choisir un patient : </label> <select class="form-control" id='patient' name='patient_id' style="width: 300px">
+        <input type="hidden" name="action" value="<?php echo $target;?>">
+        <?php
+        if(isset($next_target)){
+            echo '<input type="hidden" name="target" value="'.$next_target.'">';
+        }
+        ?>
+        <label for="patient">Choisir un patient : </label> <select class="form-control" id='patient' name="patient_id" style="width: 300px">
             <?php
             foreach ($results as $patient) {
                 //$results contient la liste des patients

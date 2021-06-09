@@ -65,14 +65,12 @@ class ModelPatient {
         }
     }
 
-    public static function GetPasVaccine() {
+    //retourne la liste des patients qui n'ont jamais recu de doses
+    public static function getPasVaccine() {
         try {
             $database = Model::getInstance();
-            $query = "SELECT * FROM patient WHERE id NOT IN (SELECT patient_id FROM rendezvous)";
-            $statement = $database->prepare($query);
-            $statement->execute();
-            $results = $statement->fetchAll(PDO::FETCH_CLASS, "ModelPatient");
-            return $results;
+            $statement = $database->query("select * from patient where id not in (select patient_id from rendezvous)");
+            return $statement->fetchAll(PDO::FETCH_CLASS, "ModelPatient");
         } catch (PDOException $e) {
             printf("%s - %s<p/>\n", $e->getCode(), $e->getMessage());
             return NULL;

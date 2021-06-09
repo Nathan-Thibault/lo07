@@ -6,11 +6,18 @@ require_once '../model/ModelVaccin.php';
 
 class ControllerRendezVous {
 
+    //questionnaire pour sélectionner un patient parmi un liste de patients
     public static function rendezVousReadPatient($args) {
-        $results = ModelPatient::getAll();
         $target = $args['target'];
-        if ($target='centreReadCentre') {
-            $results = ModelPatient::GetPasVaccine();
+        switch($target){
+            case 'vaccinReadId' :
+                $results = ModelPatient::getPasVaccine();
+                $next_target = 'centreReadCentre';
+                break;
+            case 'rendezVousGestionDossier' :
+            default :
+                $results = ModelPatient::getAll();
+                break;
         }
         if (DEBUG)
             echo 'ControllerRendezVous:vaccinReadId : target =' . $target . '<br/>';
