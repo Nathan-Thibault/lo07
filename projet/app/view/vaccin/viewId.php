@@ -25,7 +25,7 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
         <?php
         switch ($target){
             case 'vaccinUpdated' :
-                echo '<label for="doses">doses : </label><input id="doses" class="form-control" style="width: 200px" type="number" name="doses">';
+                echo '<label for="doses">doses : </label><input id="doses" class="form-control" style="width: 200px" type="number" min="1" name="doses">';
                 break;
             case 'vaccinRemove' :
                 echo '<div class="checkbox"><label><input name="remove_stock" type="checkbox" checked="">Supprimer les stocks</label></div>';
@@ -33,7 +33,8 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
             default :
         }
         ?>
-        <button class="btn btn-primary" type="submit">Sélectionner le vaccin</button>
+        <br/>
+        <button class="btn btn-primary" type="submit">Valider</button>
     </div>
 </form>
 <?php include $root . '/app/view/fragment/fragmentVaccinationFooter.html'; ?>
