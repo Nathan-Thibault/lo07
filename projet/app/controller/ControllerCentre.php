@@ -38,7 +38,7 @@ class ControllerCentre
     
     public static function centreReadCentre() 
     {
-        $patient_id = $_GET["patient_id"];
+        $patient_id = htmlspecialchars($_GET['patient_id']);
         $results = ModelCentre::getAll();
                 // ----- Construction chemin de la vue
         include 'config.php';

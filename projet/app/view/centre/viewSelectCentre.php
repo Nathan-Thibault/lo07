@@ -9,7 +9,7 @@ include $root . '/app/view/fragment/fragmentVaccinationJumbotron.html';
     <div class="form-group">
         <input type="hidden" name='action' value='vaccinReadId'>
         <input type="hidden" name='target' value='rendezVousPrendre'>
-        <input type="hidden" name="patient_id" value='<?php echo($patient_id);?>'>
+        <input type="hidden" name="patient_id" value="<?php echo $patient_id?>">
 
         <label for="centre">Choisir un centre : </label> <select class="form-control" id='centre' name='centre_id' style="width: 500px">
             <?php
