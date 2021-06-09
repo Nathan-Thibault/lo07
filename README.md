@@ -2,6 +2,3 @@
 ## Auteurs
 - Ambroise THIBAULT
 - Nathan THIBAULT
-
-Test
-test 2
