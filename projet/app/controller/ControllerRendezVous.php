@@ -9,6 +9,9 @@ class ControllerRendezVous {
     public static function rendezVousReadPatient($args) {
         $results = ModelPatient::getAll();
         $target = $args['target'];
+        if ($target='centreReadCentre') {
+            $results = ModelPatient::GetPasVaccine();
+        }
         if (DEBUG)
             echo 'ControllerRendezVous:vaccinReadId : target =' . $target . '<br/>';
         // ----- Construction chemin de la vue
