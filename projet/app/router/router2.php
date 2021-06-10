@@ -69,6 +69,15 @@ switch ($action) {
         ControllerRendezVous::$action($args);
         break;
 
+    case "vaccinationAccueil" :
+    case "documentationInnovation1" :
+    case "documentationInnovation2" :
+    case "documentationInnovation3" :
+    case "pointDeVueProjet" :
+
+        ControllerVaccination::$action();
+        break;
+
     // Appel par défaut
     default:
         $action = "vaccinationAccueil";
@@ -76,4 +85,5 @@ switch ($action) {
 }
 ?>
 <!-- ----- Fin Router -->
+
 
