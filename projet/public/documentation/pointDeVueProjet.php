@@ -15,7 +15,7 @@ require ($root . '/app/view/fragment/fragmentVaccinationHeader.html');
         <div class="panel panel-primary">
             <div class="panel-heading">Documentation point de vue sur le projet</div>
             <div class="panel-body">
-                <p>À compléter</p>           
+                <p>Parler du fait de la durée entre les différentes doses, rajouter une notion de temporalité dans le projet. Calendrier etc.</p>           
             </div>
         </div>
 
